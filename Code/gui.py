@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
-from game_logic import gameplay
+from game_logic import SimpleGame, GeneralGame, gameplay
 import random
 import os
 
@@ -165,18 +165,23 @@ class SOSGui:
             size = int(size_input)
             if size < 3 or size > 10:
                 raise ValueError("Size must be between 3 and 10")
-            self.game_logic = gameplay(size, self.mode_var.get())
+
+            game_mode = self.mode_var.get()
+            if game_mode == "Simple":
+                self.game_logic = SimpleGame(size)
+            else:
+                self.game_logic = GeneralGame(size)
             self.gameGrid(size)
             self.update_turn_label()
 
             if hasattr(self, "scoreboard"):
                 self.scoreboard.destroy()
-        
+
             self.scoreboard = tk.Label(self.root, text="Blue: 0 Red: 0", bg="lightgray", font=("Arial", 12, "bold"))
             self.scoreboard.pack(side=tk.BOTTOM, pady=5)
 
         except ValueError as e:
-         messagebox.showerror("Invalid input", str(e))
+            messagebox.showerror("Invalid input", str(e))
 
     def update_turn_label(self):
         self.turn_label.config(text=f"Current turn: {self.game_logic.current_turn}")
